@@ -1,6 +1,6 @@
 # array.prototype.pureSplice()
 
-Array method to return a new array with a specified number of elements removed.  Unlike JavaScript's native array.splice() method, array.pureSplice does *not* modify the source array.
+Array method to return a new array with a specified number of elements removed.  Unlike JavaScript's native array.splice() method, array.pureSplice does *not* modify the source array.  This is important if immutability of data is important to you and/or you are using libraries such as Redux.
 
 
 ##Issues with JavaScript's native splice()

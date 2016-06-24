@@ -10,7 +10,9 @@
     "prepublish": "npm run build"
   },
   "keywords": [
-    "ES6"
+    "ES6",
+    "Immutable",
+    "Redux"
   ],
   "author": "Michael Brown <brownieboy@gmail.com>",
   "license": "ISC",
