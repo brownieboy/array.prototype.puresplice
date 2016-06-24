@@ -10,7 +10,7 @@ var sourceArray = ["wombat", "koala", "emu", "kookaburra"]
 var newArray = sourceArray.splice(1, 1);    // Should return 'koala' as the single item in the new array
 console.log(JSON.stringify(newArray)); // ["koala"]
 console.log(JSON.stringify(sourceArray)); // ["wombat", "emu", "kookaburra"].
-
+  ```
 
 ##Using pureSplice()
 
