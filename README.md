@@ -46,7 +46,6 @@ Tests are built with mocha + chai.  Run with `npm test`.
 Tests check that a new array can be returned from a source array with:
 
 1. A single element removed in the returned array
-
 1. The source array remaining unchanged.
 
 
