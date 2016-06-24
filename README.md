@@ -32,6 +32,25 @@ console.log(JSON.stringify(sourceArray)); // ["wombat", "koala", "emu", "kookabu
 
   ```
 
+##How to use/install
+Install from npm with:
+
+    npm install --save array.prototype.puresplice
+
+Require or import like so for ES6:
+
+    import 'array.prototype.puresplice';
+
+or like this for CommonJS:
+
+    require("array.prototype.puresplice");
+
+Don't assign the package to any variable when you import/require it.  When imported, the package will add the .pureSplice() method directly to JavaScript's Array.prototype.
+
+The index.js is implemented in UMD format, so should also work for AMD/RequireJS, but I've not tested that.  You can also add it as a script tag.
+
+
+
 ##Development Instructions
 First run `npm install` to update the dev dependencies, basically the Babel command line tool and its dependences.
 
