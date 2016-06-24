@@ -1,12 +1,11 @@
 {
   "name": "array.prototype.puresplice",
-  "version": "0.0.5",
-  "description": "Simple function to bind multiple methods to an ES6 class's 'this' object. Intended as an equivalent to Backbone's bindAll() method.",
+  "version": "0.0.1",
+  "description": "Array method to return a new array with a specified number of elements removed, but without changing the source array.",
   "main": "index.js",
-  "repository": "https://github.com/brownieboy/es6bindall.git",
+  "repository": "https://github.com/brownieboy/array.prototype.puresplice.git",
   "scripts": {
     "build": "babel src/arraypuresplice.js --out-file index.js",
-    "start": "babel --watch --presets es2015 src/arraypuresplice.js --out-file index.js",
     "test": "./node_modules/.bin/mocha ./tests",
     "prepublish": "npm run build"
   },
@@ -19,7 +18,6 @@
     "babel": "^6",
     "babel-cli": "^6",
     "babel-eslint": "^6.1.0",
-    "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-preset-es2015": "^6.9.0",
     "chai": "^3",
     "eslint": "^2.13.1",

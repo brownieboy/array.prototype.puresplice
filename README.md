@@ -1,100 +1,49 @@
-# es6bindall
+# array.prototype.pureSplice()
 
-Simple function to bind multiple methods to an ES6 class's 'this' object. Intended as an equivalent to Backbone/Underscore's _.bindAll() method.
+Array method to return a new array with a specified number of elements removed.  Unlike JavaScript's native array.splice() method, array.pureSplice does *not* modify the source array.
 
-I created this plug-in to get around a problem where an ES6 class method's context is not autobound to the class's object.  This is a particular point of pain for ReactJS when using this syntax.  (ReactJS's previous .createClass() syntax _did_ autobind a component's methods to the component's own context.)
 
-##Problem Code
-In the code below, the ```close()``` and ```open()``` methods, which both call ```this.setState()``` will fail.  This is because those method's ```this``` object is not autobound to the component's context, so ```this.setState()``` simply doesn't exist.
+##Issues with JavaScript's native splice()
+Running the code below, using JavaScript's native .splice() method, the original array is actually modified.  This could cause unintended side effects if you're not aware of this behaviour.  Also, the .splice() method actually returns an array *of* the elements that you removed, rather than an array *without* those elements.  Again, this is not that useful, IMHO.
 ```javascript
-class ExampleModal extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  close() {
-    this.setState({ showModal: false });
-  }
+var sourceArray = ["wombat", "koala", "emu", "kookaburra"]
+var newArray = sourceArray.splice(1, 1);    // Should return 'koala' as the single item in the new array
+console.log(JSON.stringify(newArray)); // ["koala"]
+console.log(JSON.stringify(sourceArray)); // ["wombat", "emu", "kookaburra"].
 
-  open(){
-    this.setState({ showModal: true });
-  }
+
+##Using pureSplice()
+
+###Syntax
+```javascript
+var newArray = sourceArray.pureSplice(start, deleteCount);
   ```
+*start:* index at which you want to start dropping elements.  Remember, JavaScript array counts are zero-based, so element 1 is actually the second element in the array.
+*deleteCount:* How many elements you want to drop from the array.
 
-##Workaround 1 - Bind method at call time
-One workaround that I've seen suggests that you should bind the method when you're calling it, as shown below:
+###Example
+Running the same code below, substituting .pureSplice() for .splice(), returns a new array with the specified elements removed.  Crucially, the source array is not changed:
 ```javascript
-// Example take from http://egorsmirnov.me/2015/08/16/react-and-es6-part3.html
-export default class CartItem extends React.Component {
-    render() {
-        <button onClick={this.increaseQty.bind(this)} className="button success">+</button>
-    }
-}
-```
-This certainly gives you the most flexibility, since you can call the method as either bound or unbound should you wish.  Still, it's a massive pain in the rear to remember to do this every time you call your method.
+var sourceArray = ["wombat", "koala", "emu", "kookaburra"]
+var newArray = sourceArray.pureSplice(1, 1);    // Should remove 'koala' from array
+console.log(JSON.stringify(newArray)); // ["wombat", "emu", "kookaburra"]
+console.log(JSON.stringify(sourceArray)); // ["wombat", "koala", "emu", "kookaburra"]
 
-
-##Workaround 2 - Bind all methods manually in constructor
-The code below will work correctly because each method's ```this``` is manually bound to the component's context by a separate ```.bind()``` call in the component's constructor.
-
-```javascript
-class ExampleModal extends React.Component {
-  constructor(props) {
-    super(props);
-    this.close = this.close.bind(this);
-    this.open = this.open.bind(this);
-  }
-  close() {
-    this.setState({ showModal: false });
-  }
-
-  open(){
-    this.setState({ showModal: true });
-  }
   ```
-
-While an improvement over Workaround 1, that's still a lot of code to add to your constructor just to bind your methods.  And so...
-
-
-##Workaround 3 - Bind all methods manually in constructor with es6bindAll
-...and so, I borrowed an idea from Backbone, which has [a _.bindAll() function](http://underscorejs.org/#bindAll) (actually part of Underscore).  You can generally call this in your Backbone class constructors in order to bind the methods to the class object.  Following that idea, I've created es6BindAll as a simple function that binds a supplied list of method names to a supplied context (```this```).  It takes two arguments:
-
-1. The context (i.e an object) to which the methods are to be bound.
-2. An array of method names.  Those methods must exist in the current component/class, i.e. they can't be external functions.
-
-Example use:
-```javascript
-import es6BindAll from "es6bindall";  // 'import {es6BindAll} from "es6bindall"' will also work
-
-class ExampleModal extends React.Component {
-  constructor(props) {
-    super(props);
-    es6BindAll(this, ["open", "close"]);
-  }
-  close() {
-    this.setState({ showModal: false });
-  }
-
-  open(){
-    this.setState({ showModal: true });
-  }
-  ```
-
-##Browser Support
-Internet Explorer 9 and upwards, plus all good browsers (i.e. any browser _not_ called Internet Explorer).
-
 
 ##Development Instructions
-There's not much source code to change, but if you must!
-
 First run `npm install` to update the dev dependencies, basically the Babel command line tool and its dependences.
 
-The source code is in the src/es6bindall.js file, and is in an es6(ish) kind of format.  Run `npm run build` to have Babel transpile the code to es5 format to the project's main file, i.e. index.js in the root.
+The source code is in the src/getsourcearray.js file, and is in ES2015 (aka ES6) format.  Run `npm run build` to have Babel transpile the code to es5 format to the project's main file, i.e. index.js in the root.
 
-Alternatively, you can run `npm run start` to have Babel watch the src/es6bindall.js file for changes.  Babel will then update index.js automatically, whenever you save a change to src/es6bindall.js.
+The source code uses [ES2015's array spread operator](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Spread_operator), together with JavaScript's native .slice() method (not to be confused with the .splice() method!).  I lifted this idea from [one of Dan Abramov's free Redux videos on Egghead](https://egghead.io/lessons/javascript-redux-avoiding-array-mutations-with-concat-slice-and-spread).
+
 
 ##Tests
-Tests are built with mocha + chai.  Run with `npm run test`.
+Tests are built with mocha + chai.  Run with `npm test`.
 
-Tests check that a test method remains bound to its parent object after its been bound using es6BindAll (i.e. .bind() under the covers), even if the context is being overridden by a .call().  (.bind trumps .call() it seems.)
+Tests check that a new array can be returned from a source array with:
+1. A single element removed in the returned array
+1. The source array remaining unchanged.
 
 
